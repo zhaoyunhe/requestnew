@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load bootstrap3 %}
+    {% bootstrap_css %}
+    {% bootstrap_javascript %}
+    <title>Env</title>
+    <script src="//libs.baidu.com/jquery/1.10.2/jquery.min.js">
+    </script>
+	<script src="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <style>
+        #adddivbigemail{
+        width: 32px;
+        height: 20px;
+        border-radius: 50px;
+        position: relative;
+        }
+        #adddivsmallemail{
+            width: 15px;
+            height: 15px;
+            border-radius: 48px;
+            position: absolute;
+            background: white;
+            box-shadow: 0px 2px 4px rgba(0,0,0,0.4);
+        }
+        #adddivbig{
+        width: 32px;
+        height: 20px;
+        border-radius: 50px;
+        position: relative;
+        }
+        #adddivsmall{
+            width: 15px;
+            height: 15px;
+            border-radius: 48px;
+            position: absolute;
+            background: white;
+            box-shadow: 0px 2px 4px rgba(0,0,0,0.4);
+        }
+        .addopenbig{
+            background:skyblue;
+        }
+        .addopensmall{
+            top: 2px;
+            right: 1px;
+        }
+        .addclosebig{
+            background: rgba(255,255,255,0.4);
+            border:2px solid rgba(0,0,0,0.15);
+            border-left: transparent;
+        }
+        .addclosesmall{
+            left: 1px;
+            top: 0px;
+            border:1px solid rgba(0,0,0,0.1);}
+        .selectbtn{
+            background: #DDDDDD;
+            border:1px solid dodgerblue;
+        }
+        .unselectbtn{
+            background: white;
+        }
+    </style>
+    <script>
+        //搜索或者搜索分页后去根据select返回的value去确定第几个option被选中
+        $(function(){
+            carry();
+            //add();
+            del();
+            paging();
+            search();
+            startTask();
+            close();
+            //process_finish();
+        });
+        //搜索或者搜索分页后去根据select返回的value去确定第几个option被选中
+        function get_option(elements,value){
+           $(elements).each(function(index,element){
+                if($(element).val()==value){
+                    $(element).attr("selected",true);
+                    //console.log($(element).val());
+                    return;
+                }
+            });
+        }
+        function search(){
+            var elementsStatus="#select1 option";
+            var valueStatus="{{ select }}";
+            get_option(elementsStatus,valueStatus);
+            var elementsProject="#selectproject option";
+            var selectproject="{{ selectproject }}";
+            get_option(elementsProject,selectproject);
+        }
+        //模态框关闭刷新当前页面数据避免一个attr的bug
+        function close(){
+            $("#editMyModal").on('hidden.bs.modal', function () {
+                //alert(1);
+                location.reload();
+            });
+        }
+        //是否要发送邮件
+        function send_email(){
+            $("#adddivbigemail").click(function(){
+                //把日程表关掉
+                $("#myid_msg").css("display","None");
+
+                if ($("#adddivbigemail").attr("class")=="addopenbig"){
+                    $("#adddivbigemail").prop("class","addclosebig");
+                    $("#adddivsmallemail").prop("class","addclosesmall");
+                    $("#emailul").prop("style","display:None");
+                    //删除定时属性
+                    $(".send_email").removeAttr("name");
+                }
+                else{
+                    $("#adddivbigemail").attr("class","addopenbig");
+                    $("#adddivsmallemail").attr("class","addopensmall");
+                    $("#emailul").attr("style","list-style-type: none;display:block");
+                    //添加定时属性
+                    $(".send_email").attr("name","subject");
+                }
+        });
+        }
+        //是否要使用定时任务
+        function schedule(){
+            $("#adddivbig").click(function(){
+                //把日程表关掉
+                $("#myid_msg").css("display","None");
+
+                if ($("#adddivbig").attr("class")=="addopenbig"){
+                    $("#adddivbig").prop("class","addclosebig");
+                    $("#adddivsmall").prop("class","addclosesmall");
+                    $("#scheduleul").prop("style","display:None");
+                    //删除定时属性
+                    $(".carryschedule").removeAttr("name");
+                }
+                else{
+                    $("#adddivbig").attr("class","addopenbig");
+                    $("#adddivsmall").attr("class","addopensmall");
+                    $("#scheduleul").attr("style","list-style-type: none;display:block");
+                    //添加定时属性
+                    $(".carryschedule").attr("name","schedule");
+                }
+        });
+        }
+
+        //执行
+        function carry(){
+            //把日程表提示关掉
+            $("#myid_msg").css("display","None");
+
+            $("#btn2").click(function(){
+                $('#prog_in').width(0+ '%');
+                $("#myAlert").css("display","none");
+                $("#myAlert1").css("display","none");
+                var count=0;
+                var env_value;
+                var env=new Array();
+                var elements=$(".ipt");
+                $("#table").find(":checkbox:checked").each(function(){
+                    env_value=$(this).parent()
+                    for (var i=0;i<elements.length;i++){
+                        env_value=env_value.next()
+                        //alert(env_value.text());
+                        env[i]=env_value.text();
+                    }
+                    //alert(env)
+                    count++;
+                });
+                if (count==1)
+                {
+                    //alert(env);
+                    for (var i=0;i<env.length-1;i++){
+                        if ((env[i]!="" && i<5) || i>=5){
+                            //console.log(env[i]);
+                            $(elements[i]).val(env[i]);
+                        }
+                    }
+                    if (env[env.length-1]=="True"){
+                        $(elements[env.length-1]).prop('checked',true);
+                    }
+                    else{
+                        $(elements[env.length-1]).removeAttr('checked');
+                    }
+                    $('#editMyModal').modal("show");
+                }
+                else{
+                    $("#myAlert").css("display","inherit");
+                }
+
+                schedule();
+                send_email();
+            });}
+        //新增
+        function add(){
+            $("#btn1").click(function(){
+                $("#myAlert").css("display","none");
+                $("#myAlert1").css("display","none");
+            });
+        }
+        //删除
+        function del(){
+            $("#btn3").click(function(){
+                var task_names=new Array();
+                var count=0;
+                var i=0;
+                $("#myAlert").css("display","none");
+                $("#myAlert1").css("display","none");
+                $("#table").find(":checkbox:checked").each(function() {
+                    task_name = $(this).parent().next().text();
+                    if (task_name != "") {
+                        task_names[i++] = task_name;
+                    }
+                    //alert(task_names);
+                    count++;
+                });
+                //alert(env_ids);
+                if (count==0){
+                    $("#myAlert1").css("display","inherit");
+                    return false;
+                }
+                else{
+                    $("#ipt1").val(task_names);
+                    $("#del").submit();
+                }
+            });
+        }
+        //启动定时任务
+        function startTask(){
+            $("#startTimingTask").click(function(){
+                $.ajax({url:"/start_timing_task/"});
+            });
+        }
+        //分页
+        function paging(){
+            function merge(btn){
+                elementtask_name=$("#ipt2").val();
+                oldHref=$(btn).attr("href");
+                href=oldHref+"&task_name="+elementtask_name
+                $(btn).attr("href",href)
+            }
+            var elementstep_name,elementcase_name,elementmethod,elementsteplevel,elementselect;
+            $("#first").click(function(){
+                merge(this);
+            });
+            $("#previous").click(function(){
+                merge(this);
+            });
+            $("#next").click(function(){
+                merge(this);
+            });
+            $("#last").click(function(){
+                merge(this);
+            });
+        }
+        //定时校验
+        function checkschedule(){
+            var reg=/^([0-5][0-9]|[0-9]|\*) ([0-1][0-9]|[0-9]|2[0-3]|\*) ([0-2][0-9]|[0-9]|3[0-1]|\*) (0[0-9]|[0-9]|1[0-2]|\*) ([0-6]|\*)$/;
+            if ($(".carryschedule").attr('name')=="schedule"){
+                //alert(reg.test($(".carryschedule").val()));
+                if (!$(".carryschedule").val().match(reg)){
+                    $("#myid_msg").css("display","inherit");
+                    return 0;
+                }
+                else{
+                    $("#myid_msg").css("display","None");
+                    return 1;
+                }
+            }
+            return 1;
+        }
+        //进度条
+        function progress_bar() {
+            var href,finishresult,num_progress,i;
+            i=1;
+            href = "/get_progress_bar/"
+            issubmit=checkschedule();
+            if (issubmit==1){
+                $("#carryform").removeAttr("onsubmit");
+                //成功后进度直接到100%
+                /*var get_progress =setInterval(function () {
+                $.get(href,function(finish){
+                    finishresult=finish['getfinish']
+                    if (finishresult == 1) {
+                        $('#prog_in').width(100 + '%');
+                        clearInterval(get_progress);
+                    }
+                    else{
+                        num_progress = i * 3;
+                        if (num_progress <= 95) {
+                            $('#prog_in').width(num_progress + '%');
+                        }
+                        i++;
+                    }
+                });
+
+            }, 100);*/
+            }
+        }
+    </script>
+</head>
+<body role="document">
+    <!--环境搜索栏-->
+    <div class="page-header" >
+        <form class="navbar-form" method="GET" action="/task_search_name/">
+            <div class="form-group">
+                <input id="ipt2" name="task_name" type="text" placeholder="任务名" class="form-control" value={{ task_name }}>
+            </div>
+            <button id="btn4" type="submit" class="btn btn-default" style="background:#C0C0C0">搜索</button>
+            {% csrf_token %}
+        </form>
+    </div>
+    <!--警告框-->
+    <div id="myAlert" class="alert alert-warning" style="display: none">
+	    <a href="#" class="close" data-dismiss="alert">&times;</a>
+	    <strong>警告！</strong>执行时只能勾选一条。
+    </div>
+    <div id="myAlert1" class="alert alert-warning" style="display: none">
+	    <a href="#" class="close" data-dismiss="alert">&times;</a>
+	    <strong>警告！</strong>删除时一定要勾选一条。
+    </div>
+    <!--按钮-->
+    <div class="btn-toolbar" role="toolbar">
+        <div class="btn-group">
+            <button id="btn1" class="btn btn-default" style="background:#3300CC;color:white;display: None" data-toggle="modal" data-target="#addMyModal" >
+                <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>新增
+            </button>
+            <button id="btn2" class="btn btn-default" style="background:#3300CC;color:white;" data-toggle="modal" data-target="#">
+                <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>执行
+            </button>
+            <form id="del" method="POST" action="/tasks_delete_data/" style="display:inline;">
+                <input id="ipt1" type="text" name="task_names" style="display:none"/>
+                <button id="btn3" type="onclick" class="btn btn-default" style="background:#3300CC;color:white;">
+                    <span class="glyphicon glyphicon-minus" aria-hidden="true"></span>删除
+                </button>
+                {% csrf_token %}
+            </form>
+            <button id="startTimingTask" class="btn btn-default" style="background:#3300CC;color:white;" data-toggle="modal" data-target="#">
+                <span class="glyphicon glyphicon-play-circle" aria-hidden="true"></span>启动全部定时任务
+            </button>
+        </div>
+    </div>
+    <!--任务列表-->
+    <div>
+        <div>
+            <table id="table" class="table table-striped">
+                <tr>
+                    <th>选中</th><th>任务名</th><th>环境</th><th>数据库</th><th>失败重跑次数</th><th>邮箱</th><th>执行规则</th><th>状态</th><th>备注</th>
+                </tr>
+                <tbody>
+                {% for task in tasks %}
+                    <tr>
+                        <td id="che1"><input type="checkbox"/></td>
+                        <td>{{ task.task_name }}</td>
+                        <td>{{ task.env_desc }}</td>
+                        <td>{{ task.db_remark }}</td>
+                        <td>{{ task.failcount }}</td>
+                        <td>{{ task.subject }}</td>
+                        <td>{{ task.task_run_time_regular }}</td>
+                        <td>{{ task.status }}</td>
+                        <td>{{ task.remark }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <!-- 模态框示例（Modal） -->
+    <!--新增-->
+    <div class="modal fade" id="addMyModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	<div class="modal-dialog" style="max-width:400px">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+					&times;
+				</button>
+				<h4 class="modal-title" id="myModalLabel">
+					定时任务
+				</h4>
+			</div>
+			<div class="modal-body">
+                <form role="form" method='POST' action="/modules_add_data/">
+                    <div class="form-group">
+                        <label  for="modules_name">模块名</label>
+                        <input  type="text" class="form-control" name="modules_name" placeholder="请输入模块名" required>
+                    </div>
+                    <div class="form-group">
+                        <label  for="project_name" ></label>
+                        <select name="project_name" class="form-control" required>
+                            {% for project_name in project_names %}
+                            <option>{{ project_name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label  for="testers">测试人员</label>
+                        <input  type="text" class="form-control" name="testers" placeholder="请输入测试人员" >
+                    </div>
+                    <div class="form-group">
+                        <label  for="developer">开发人员</label>
+                        <input  type="text" class="form-control" name="developer" placeholder="请输入开发人员" >
+                    </div>
+                    <div class="form-group">
+                        <label for="modules_desc">模块描述</label>
+                        <input  type="text" class="form-control" name="modules_desc" placeholder="请输入模块描述">
+                    </div>
+                    <div class="form-group" >
+                        <label class="checkbox-inline">
+                            <input type="checkbox" name="status" id="optionsRadios1" checked> 状态
+                        </label>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">关闭
+				        </button>
+				        <button type="submit" class="btn btn-primary">
+					    提交
+				        </button>
+			        </div>
+                    {% csrf_token %}
+                </form>
+			</div>
+		</div><!-- /.modal-content -->
+	</div><!-- /.modal -->
+    </div>
+    <!-- 执行 -->
+    <div class="modal fade" id="editMyModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	<div class="modal-dialog" style="max-width:400px">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+					&times;
+				</button>
+				<h4 class="modal-title" id="myModalLabel">
+					定时任务
+				</h4>
+			</div>
+			<div class="modal-body">
+                <form id="carryform" role="form" method='POST' action="/task_run/" onsubmit="return false;">
+                    <div class="form-group">
+                        <label  for="case_name">任务名</label>
+                        <input  type="text" class="ipt form-control" name="task_name" placeholder="请输入任务名" readonly="readonly" required>
+                    </div>
+                    <div class="form-group">
+                        <label  for="env_desc" >环境</label>
+                        <select name="env_desc" class="ipt form-control" required>
+                            {% for env_desc in env_descs %}
+                            <option>{{ env_desc }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label  for="database_desc" >数据库</label>
+                        <select name="database_desc" class="ipt form-control" required>
+                            {% for db_remark in db_remarks %}
+                            <option>{{ db_remark }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label  for="failcount">失败后重跑次数</label>
+                        <!--<input  type="number" class="form-control" name="failcount" value="2" placeholder="失败后重跑次数" required>-->
+                        <input  class="ipt form-control" name="failcount" value="2" placeholder="失败后重跑次数" required onkeyup="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}" onafterpaste="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}">
+                    </div>
+                    <div class="form-group">
+                        <label for="params" >是否发送邮件</label>
+                        <div id="adddivbigemail" class="addopenbig">
+                            <div id="adddivsmallemail" class="addopensmall"></div>
+                        </div>
+                        <ul id="emailul" style="list-style-type: none" >
+                        <li>
+                            <select name="subject" class="ipt form-control send_email" required>
+                                {% for subject in subjects %}
+                                <option>{{ subject }}</option>
+                                {% endfor %}
+                            </select>
+                        </li>
+                        </ul>
+                    </div>
+                    <div class="form-group">
+                        <label for="params" >是否定时</label>
+                        <div id="adddivbig" class="addopenbig">
+                            <div id="adddivsmall" class="addopensmall"></div>
+                        </div>
+                       <ul id="scheduleul" style="list-style-type: none" >
+                            <li>
+                                <input   type="text" class="ipt carryschedule form-control" placeholder="日程表" title="规则是:minute0-59 hour0-23 day1-31 month1-12 day_of_week0-6" name="schedule"/>
+                                <span id="myid_msg" style="display:none;color:#ff0000;">错误日程表</span>
+                                <label class="checkbox-inline">
+                                    <input type="checkbox" class="ipt" name="status" id="optionsRadios1" checked> 状态
+                                </label>
+                            </li>
+                       </ul>
+                    </div>
+                    <div class="progress">
+                        <div id="prog_in" class="progress-bar progress-bar-info" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 0%;">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">关闭
+				        </button>
+				        <button onclick="progress_bar()" class="btn btn-primary">
+					    执行
+				        </button>
+			        </div>
+                    {% csrf_token %}
+                </form>
+			</div>
+		</div><!-- /.modal-content -->
+	</div><!-- /.modal -->
+    </div>
+    <!--分页器-->
+    <div style="text-align: right;">
+        <ul class="pagination pagination-sm">
+            <li>
+                <span class="current">
+                    Page {{ tasks.number }} of {{ tasks.paginator.num_pages }}
+                </span>
+            </li>
+            <li>
+                <a id="first" href="/task/?page=1">
+                    <span class="glyphicon glyphicon-fast-backward"></span>
+                </a>
+            </li>
+            <li>
+                {% if tasks.has_previous %}
+                <a id="previous" href="/task/?page={{ tasks.previous_page_number }}">
+                    <span class="glyphicon glyphicon-backward"></span>
+                </a>
+                {% endif %}
+            </li>
+            <li>
+                {% if tasks.has_next %}
+                <a id="next" href="/task/?page={{ tasks.next_page_number }}">
+                    <span class="glyphicon glyphicon-forward"></span>
+                </a>
+                {% endif %}
+            </li>
+            <li>
+                <a id="last" href="/task/?page={{ tasks.paginator.num_pages }}">
+                    <span class="glyphicon glyphicon-fast-forward"></span>
+                </a>
+            </li>
+        </ul>
+    </div>
+</body>
+</html>

@@ -1,0 +1,23 @@
+#!/usr/bin/python
+#-*- encoding:UTF-8 -*-
+
+from public.request import *
+from public.sqldb import *
+from public.log import *
+from public.run import *
+from public.sqldb import Transferip_db
+import unittest,re,json
+class ${case_name}(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.transferlogname=Transferlogname()
+        cls.transferip_db=Transferip_db()
+        api="${api}"
+        cls.url=cls.transferip_db.ip+api
+        pass
+
+    @classmethod
+    def tearDownClass(cls):
+        pass
+
+
