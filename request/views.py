@@ -1384,10 +1384,16 @@ def task_search_name(request):
 def get_ip_database(request,env_desc,database_desc):
     #环境
     env_list=Environment.objects.filter(env_desc=env_desc).values("env_ip","env_host","env_port")
-    if env_list[0]['env_ip']!="":
-        env_ip="http://{host}:{port}".format(host=env_list[0]['env_ip'],port=env_list[0]['env_port'])
+    if env_list[0]['env_ip'] != "":
+        if env_list[0]['env_port'] != "":
+            env_ip = "http://{host}:{port}".format(host=env_list[0]['env_ip'], port=env_list[0]['env_port'])
+        else:
+            env_ip = "http://{host}".format(host=env_list[0]['env_ip'])
     else:
-        env_ip = "http://{host}:{port}".format(host=env_list[0]['env_host'], port=env_list[0]['env_port'])
+        if env_list[0]['env_port'] != "":
+            env_ip = "http://{host}:{port}".format(host=env_list[0]['env_host'], port=env_list[0]['env_port'])
+        else:
+            env_ip = "http://{host}".format(host=env_list[0]['env_host'])
     #数据库
     db_list=Database.objects.filter(db_remark=database_desc).values('db_type','db_name','db_ip','db_port','db_user','db_password')
     create_db(db_list[0]['db_type'],db_list[0]['db_ip'],db_list[0]['db_port'], db_list[0]['db_user'],db_list[0]['db_password'],db_list[0]['db_name'],env_ip)
