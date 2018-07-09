@@ -1312,7 +1312,7 @@ def get_env_database_desc(request):
     startdb_remarks = Database.objects.values("db_remark")
     for i in range(len(startdb_remarks)):
         db_remarks.append(startdb_remarks[i]['db_remark'])
-    # 数据库
+    # 邮件
     start_subjects = Email.objects.values("subject")
     for i in range(len(start_subjects)):
         subjects.append(start_subjects[i]['subject'])
@@ -1395,7 +1395,12 @@ def get_ip_database(request,env_desc,database_desc):
         else:
             env_ip = "http://{host}".format(host=env_list[0]['env_host'])
     #数据库
-    db_list=Database.objects.filter(db_remark=database_desc).values('db_type','db_name','db_ip','db_port','db_user','db_password')
+    if database_desc!="":
+        db_list=Database.objects.filter(db_remark=database_desc).values('db_type','db_name','db_ip','db_port','db_user','db_password')
+    #不需要数据库
+    else:
+        db_list=[]
+        db_list.append({"db_type":"","db_ip":"","db_port":"","db_user":"","db_password":"","db_name":""})
     create_db(db_list[0]['db_type'],db_list[0]['db_ip'],db_list[0]['db_port'], db_list[0]['db_user'],db_list[0]['db_password'],db_list[0]['db_name'],env_ip)
 
 #写入定时任务数据
@@ -1404,7 +1409,11 @@ def write_task(request,task_name,env_desc,database_desc,failcount,schedule,statu
     #环境
     env_id=Environment.objects.filter(env_desc=env_desc).values("id")[0]['id']
     #数据库
-    db_id=Database.objects.filter(db_remark=database_desc).values("id")[0]['id']
+    if database_desc!="":
+        db_id=Database.objects.filter(db_remark=database_desc).values("id")[0]['id']
+    #不使用数据库
+    else:
+        db_id=""
     if status != None:
         if email_data==None:
             Task.objects.filter(task_name=task_name).update(ip=env_id, db=db_id, failcount=failcount,

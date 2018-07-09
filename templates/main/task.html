@@ -449,7 +449,8 @@
                     </div>
                     <div class="form-group">
                         <label  for="database_desc" >数据库</label>
-                        <select name="database_desc" class="ipt form-control" required>
+                        <select name="database_desc" class="ipt form-control" >
+                            <option value="">请选择</option>
                             {% for db_remark in db_remarks %}
                             <option>{{ db_remark }}</option>
                             {% endfor %}

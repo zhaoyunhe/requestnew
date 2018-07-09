@@ -34,10 +34,15 @@ class Job:
             else:
                 env_ip = "http://{host}".format(host=env_list[0]['env_host'])
         # 数据库
-        db_list = DatabaseModel.objects.filter(db_remark=database_desc).values('db_type', 'db_name', 'db_ip', 'db_port',
-                                                                          'db_user', 'db_password')
+        if database_desc != "":
+            db_list = Database.objects.filter(db_remark=database_desc).values('db_type', 'db_name', 'db_ip',
+                                                                                  'db_port', 'db_user', 'db_password')
+        # 不需要数据库
+        else:
+            db_list = []
+            db_list.append({"db_type": "", "db_ip": "", "db_port": "", "db_user": "", "db_password": "", "db_name": ""})
         create_db(db_list[0]['db_type'], db_list[0]['db_ip'], db_list[0]['db_port'], db_list[0]['db_user'],
-                  db_list[0]['db_password'], db_list[0]['db_name'], env_ip)
+            db_list[0]['db_password'], db_list[0]['db_name'], env_ip)
 
         #邮件
         # 如果要发送邮件拿到邮件配置数据

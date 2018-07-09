@@ -69,10 +69,14 @@ class MakeSqlData:
 def create_db(db_type,host,port,user,pwd,db_name,env_ip):
     global db,ip
     ip=env_ip
-    if int(db_type)==0:
-        db=Database(host,int(port),user, pwd,db_name)
+    if db_name!="":
+        if int(db_type)==0:
+            db=Database(host,int(port),user, pwd,db_name)
+        else:
+            db=Database(host,user, pwd,db_name)
+    #不需要数据库
     else:
-        db=Database(host,user, pwd,db_name)
+        db=None
 #create_db(0,"192.168.100.211",3307,"akmysql", "mysql123", "bt_hyaline")
 #allocation=configuration()
 #db=Database(allocation.Mysqlhost,allocation.Mysqlport,allocation.Mysqluser,allocation.Mysqlpwd,allocation.Mysqldb)

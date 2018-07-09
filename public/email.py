@@ -53,7 +53,7 @@ class SendEmail:
         self.message.attach(msg)
 
         #添加附件日志
-        self.__addannex(  logs)
+        self.__addannex(logs)
 
 
     #添加头部信息
@@ -71,3 +71,10 @@ class SendEmail:
             print("Error: 无法发送邮件")
         finally:
             self.e.quit()
+
+sendemail = SendEmail("smtp.163.com", "25", "nxytest001@163.com", "a1l9e8x6")
+filename=r"E:\report18-07-0906-25-33.html"
+logs={"successlog":r"E:\Successlog18-07-0809-41-07.text","errorlog":"E:\Errorlog18-06-2112-44-06.text"}
+sendemail.add_message(filename, logs)
+sendemail.add_header("nxytest001@163.com", "zyq@cheok.com", "测试1")
+sendemail.send("nxytest001@163.com", "zyq@cheok.com".split(','))

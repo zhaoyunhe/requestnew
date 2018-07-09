@@ -90,8 +90,16 @@ def interface(task_name,failcount,email_data):
     CarryTask.objects.create(task_name=task_name)
     test_carryTaskid=CarryTask.objects.values("id").aggregate(id=Max('id'))['id']
     #把执行数据全部入库
-    for i in range(len(test_steps)):
-        LogAndHtmlfeedback.objects.create(test_step=test_steps[i],test_status=statuses[i],test_response=responses[i],test_carryTaskid=test_carryTaskid)
+    #如果正常
+    try:
+        for i in range(len(test_steps)):
+            LogAndHtmlfeedback.objects.create(test_step=test_steps[i],test_status=statuses[i],test_response=responses[i],test_carryTaskid=test_carryTaskid)
+    # 如果全部时内部错误返回，不生成文件
+    except:
+        for i in range(len(test_steps)):
+            LogAndHtmlfeedback.objects.create(test_step=test_steps[i],test_status=statuses[i],test_response="",test_carryTaskid=test_carryTaskid)
+
+
 '''
 if __name__=="__main__":
     interface("task")
