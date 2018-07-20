@@ -52,9 +52,9 @@ def interface(task_name,failcount,email_data):
 
     #suite.addTest(unittest.makeSuite("SVCTest"))
         for test_suite in discover:
-            print (test_suite)
+            #print (test_suite)
             for i in test_suite:
-                print (i)
+                #print (i)
                 suiteunit.addTests(i)
         #print(suiteunit)
         return(suiteunit)
