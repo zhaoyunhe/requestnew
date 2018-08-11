@@ -1,8 +1,8 @@
 源码地址：https://github.com/happyletme/requestnew
 
-更新第二篇：https://testerhome.com/topics/14801
+第一篇：https://testerhome.com/topics/13269
 
-第三篇：https://testerhome.com/topics/15352
+第二篇：https://testerhome.com/topics/14801
 主要实现了项目管理，模块管理，用例管理，步骤管理，动态Sql配置，访问地址配置，开发数据库配置，邮箱配置，执行模块；之后需要去优化的模块http接口采用文件传输方式，接口依赖，日志模块，邮件模块，统计分析和html报告(目前采用HTMLTestRunner自动生成的报告),失败重跑次数动态配置目前写死3次，定时执行模块
 环境：
 Python 3.6.4
@@ -66,11 +66,7 @@ Unittest
 
 最近项目不忙，抱着写写看的想法，测试新人，请各位大神多多指点。
 
-源码地址：https://github.com/happyletme/requestnew
 
-第一篇：https://testerhome.com/topics/13269
-
-第二篇：https://testerhome.com/topics/14801
 本次主要涉及到前端样式优化以及部分bug修复
 
 
