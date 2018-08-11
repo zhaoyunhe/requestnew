@@ -88,3 +88,28 @@ Unittest
 3.优化定时模块
 
 之后会优化断言模块和实现接口依赖模块
+
+
+
+
+配置：
+
+linux:
+1.根据testhome安装python3.6和对应的python库
+2.把源代码放到linux下（我创建了pj目录，项目放在/home/pj下）
+3.选择一个mysql数据库作为测试库，在django的setting.py文件的86行配置数据库的信息(ip,端口，数据库名称，用户名，密码)
+4.进入到项目根目录，数据库迁移：python manage.py makemigrations在request应用下的migrations目录下创建了一个 0001_initial.py 文件，执行python manage.py migrate，执行完成库表生成
+5.创建第一个用户python manage.py createsuperuser，之后的用户登录http://192.168.100.158:8000/admin/去创建用户组和用户以及分配权限
+6.在pj目录下创建logs目录，下面创建request.log文件存放项目启动文件
+7.在django的setting.py文件的28行，添加自己linux的ip（我的是ALLOWED_HOSTS = ['192.168.100.158']）
+8.把启动shell和关闭shell放在根目录下（requestnew）,sh start.sh,项目就启动了；项目关闭则执行sh shutdown.sh
+9.如果目录结构想要有所调整或者启动端口（默认8000）有所调整，需要修改启动和关闭文件
+10.其他机子能访问到（配置的ip:8000）就成功了。
+windows要靠编译器启动;
+1.根据testhome安装python3.6和对应的python库
+2.选择一个mysql数据库作为测试库，在django的setting.py文件的86行配置数据库的信息(ip,端口，数据库名称，用户名，密码)
+3.进入到项目根目录，数据库迁移：python manage.py makemigrations在request应用下的migrations目录下创建了一个 0001_initial.py 文件，执行python manage.py migrate，执行完成库表生成
+4.创建第一个用户python manage.py createsuperuser
+5.django的setting.py文件的28行，因为是本地启动保持ALLOWED_HOSTS = []就好了
+6.配置编译器启动方式，选择django server启动，HOST填写127.0.0.1，port填写8000，运行
+7.访问127.0.0.1:8000，能访问到就ok了
